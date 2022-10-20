@@ -1,0 +1,15 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="http.HttpResponse" />
+          <option value="object.cluster_centers_" />
+          <option value="object.labels_" />
+          <option value="object.transform" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
