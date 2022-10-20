@@ -104,9 +104,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-Hans'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -122,16 +122,16 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-#设置redis
+# 设置redis
 CACHES = {
-    "default": { # 默认
+    "default": {  # 默认
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
-    "session": { # session
+    "session": {  # session
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
@@ -142,7 +142,7 @@ CACHES = {
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "session"
 
-#设置日志
+# 设置日志
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,  # 是否禁用已经存在的日志器
@@ -187,11 +187,10 @@ LOGGING = {
 # 自定义User模型代替系统的User
 AUTH_USER_MODEL = 'users.User'
 
-#设置未登录用户，必须登录的跳转连接
+# 设置未登录用户，必须登录的跳转连接
 LOGIN_URL = '/login/'
-#
-# #设置图片上传路径
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-# # 图片的统一路由
-# MEDIA_URL = '/media/'
 
+# 设置图片上传路径
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+# 图片的统一路由
+MEDIA_URL = '/media/'
