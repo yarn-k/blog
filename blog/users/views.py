@@ -1,11 +1,70 @@
-from django.shortcuts import render
+import re
+
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views import View
+from pymysql import DatabaseError
+
+from users.models import User
 
 
 class RegisterView(View):
 
     def get(self, request):
         return render(request, 'register.html')
+
+    def post(self, request):
+        # 接收参数
+        mobile = request.POST.get('mobile')
+        password = request.POST.get('password')
+        password2 = request.POST.get('password2')
+        smscode = request.POST.get('sms_code')
+
+        # 判断参数是否齐全
+        if not all([mobile, password, password2, smscode]):
+            return HttpResponseBadRequest('缺少必传参数')
+        # 判断手机号是否合法
+        if not re.match(r'^1[3-9]\d{9}$', mobile):
+            return HttpResponseBadRequest('请输入正确的手机号码')
+        # 判断密码是否是8-20个数字
+        if not re.match(r'^[0-9A-Za-z]{8,20}$', password):
+            return HttpResponseBadRequest('请输入8-20位的密码')
+        # 判断两次密码是否一致
+        if password != password2:
+            return HttpResponseBadRequest('两次输入的密码不一致')
+
+        # 验证短信验证码
+        redis_conn = get_redis_connection('default')
+        sms_code_server = redis_conn.get('sms:%s' % mobile)
+        if sms_code_server is None:
+            return HttpResponseBadRequest('短信验证码已过期')
+        if smscode != sms_code_server.decode():
+            return HttpResponseBadRequest('短信验证码错误')
+
+        # 保存注册数据
+        try:
+            user = User.objects.create_user(username=mobile, mobile=mobile, password=password)
+        except DatabaseError:
+            return HttpResponseBadRequest('注册失败')
+
+        # 实现状态保持
+        from django.contrib.auth import login
+        login(request, user)
+
+        # 设置首页所需的
+
+        # 响应注册结果
+        # return redirect(reverse('home:index'))
+        # return HttpResponse('注册成功，重定向到首页')
+        # 跳转到首页
+        response = redirect(reverse('home:index'))
+        # 设置cookie
+        # 登录状态，会话结束后自动过期
+        response.set_cookie('is_login', True)
+        # 设置用户名有效期一个月
+        response.set_cookie('username', user.username, max_age=30 * 24 * 3600)
+
+        return response
 
 
 from django.http import HttpResponseBadRequest, HttpResponse
