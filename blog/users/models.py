@@ -23,3 +23,13 @@ class User(AbstractUser):
 
     # 创建超级管理员时需要必须设置的字段
     REQUIRED_FIELDS = ['username', 'email']
+
+    USERNAME_FIELD = 'mobile'
+
+    class Meta:
+        db_table = 'tb_users'  # 修改表名
+        verbose_name = '用户管理'  # admin 后台显示
+        verbose_name_plural = verbose_name  # admin后台显示
+
+    def __str__(self):
+        return self.mobile

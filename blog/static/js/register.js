@@ -161,6 +161,7 @@ var vm = new Vue({
             if (this.mobile_error == true || this.password_error == true || this.password2_error == true
                 || this.image_code_error == true || this.sms_code_error == true) {
                 // 不满足注册条件：禁用表单
+                window.onload;
                 window.event.returnValue = false;
             }
         }
