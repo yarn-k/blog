@@ -186,9 +186,9 @@ LOGGING = {
 
 # 自定义User模型代替系统的User
 AUTH_USER_MODEL = 'users.User'
-#
-# #设置未登录用户，必须登录的跳转连接
-# LOGIN_URL = '/login/'
+
+#设置未登录用户，必须登录的跳转连接
+LOGIN_URL = '/login/'
 #
 # #设置图片上传路径
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

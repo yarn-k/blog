@@ -11,7 +11,7 @@ class IndexView(View):
     """首页广告"""
 
     def get(self, request):
-        return render(request, 'inedx.html')
+        return render(request, 'index.html')
         # """提供首页广告界面"""
         # # ?cat_id=xxx&page_num=xxx&page_size=xxx
         # cat_id = request.GET.get('cat_id', 1)
