@@ -214,6 +214,7 @@ class LogoutView(View):
 
         return response
 
+
 class ForgetPasswordView(View):
 
     def get(self, request):
@@ -269,3 +270,99 @@ class ForgetPasswordView(View):
         response = redirect(reverse('users:login'))
 
         return response
+
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
+class UserCenterView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        # 获取用户信息
+        user = request.user
+
+        # 组织模板渲染数据
+        context = {
+            'username': user.username,
+            'mobile': user.mobile,
+            'avatar': user.avatar.url if user.avatar else None,
+            'user_desc': user.user_desc
+        }
+        return render(request, 'center.html', context=context)
+
+    def post(self, request):
+        # 接收数据
+        user = request.user
+        avatar = request.FILES.get('avatar')
+        username = request.POST.get('username', user.username)
+        user_desc = request.POST.get('desc', user.user_desc)
+
+        # 修改数据库数据
+        try:
+            user.username = username
+            user.user_desc = user_desc
+            if avatar:
+                user.avatar = avatar
+            user.save()
+        except Exception as e:
+            logger.error(e)
+            return HttpResponseBadRequest('更新失败，请稍后再试')
+
+        # 返回响应，刷新页面
+        response = redirect(reverse('users:center'))
+        ##更新cookie信息
+        response.set_cookie('username', user.username, max_age=30 * 24 * 3600)
+        return response
+
+# from home.models import ArticleCategory,Article
+# class WriteBlogView(LoginRequiredMixin,View):
+#
+#     def get(self,request):
+#         # 获取博客分类信息
+#         categories = ArticleCategory.objects.all()
+#
+#         context = {
+#             'categories': categories
+#         }
+#         return render(request,'write_blog.html',context=context)
+#
+#     def post(self,request):
+#         #接收数据
+#         avatar=request.FILES.get('avatar')
+#         title=request.POST.get('title')
+#         category_id=request.POST.get('category')
+#         tags=request.POST.get('tags')
+#         sumary=request.POST.get('sumary')
+#         content=request.POST.get('content')
+#         user=request.user
+#
+#         #验证数据是否齐全
+#         if not all([avatar,title,category_id,sumary,content]):
+#             return HttpResponseBadRequest('参数不全')
+#
+#         #判断文章分类id数据是否正确
+#         try:
+#             article_category=ArticleCategory.objects.get(id=category_id)
+#         except ArticleCategory.DoesNotExist:
+#             return HttpResponseBadRequest('没有此分类信息')
+#
+#         #保存到数据库
+#         try:
+#             article=Article.objects.create(
+#                 author=user,
+#                 avatar=avatar,
+#                 category=article_category,
+#                 tags=tags,
+#                 title=title,
+#                 sumary=sumary,
+#                 content=content
+#             )
+#         except Exception as e:
+#             logger.error(e)
+#             return HttpResponseBadRequest('发布失败，请稍后再试')
+#
+#         #返回响应，跳转到文章详情页面
+#         #暂时先跳转到首页
+#         path=reverse('home:detail')+'?id={}'.format(article.id)
+#         return redirect(path)
+#         #return redirect(reverse('home:index'))
