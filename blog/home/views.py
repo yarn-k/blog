@@ -147,7 +147,15 @@ class DetailView(View):
             return redirect(reverse('users:login'))
 
 
-"""
-insert into tb_comment(content,created,article_id,user_id)
-select content,created,article_id,user_id from tb_comment;
-"""
+# insert into tb_comment(content,created,article_id,user_id)
+# select content,created,article_id,user_id from tb_comment;
+#
+# INSERT INTO `tb_article`
+# (`avatar`, `tags`, `title`, `sumary`, `content`, `total_views`, `comments_count`,
+#   `created`, `updated`, `author_id`, `category_id`)
+# select avatar,tags,title,sumary,content,total_views,
+# comments_count,created,updated,author_id,category_id from
+# tb_article;
+
+
+

@@ -369,3 +369,7 @@ class WriteBlogView(LoginRequiredMixin, View):
         path = reverse('home:detail') + '?id={}'.format(article.id)
         return redirect(path)
         # return redirect(reverse('home:index'))
+
+
+
+
